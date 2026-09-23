@@ -1,0 +1,23 @@
+name: run-checker
+on:
+  schedule:
+    - cron: '*/15 * * * *'     # every 15 min (UTC, and GitHub can delay this under load)
+  workflow_dispatch:                                 # allows manual trigger
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet run --project ./PickleWatch.csproj
+        env:
+          ACUITY_CLIENT_ID: ${{ secrets.ACUITY_CLIENT_ID }}
+          ACUITY_CLIENT_SECRET: ${{ secrets.ACUITY_CLIENT_SECRET }}
+          ACUITY_USERNAME: ${{ secrets.ACUITY_USERNAME }}
+          ACUITY_PASSWORD: ${{ secrets.ACUITY_PASSWORD }}
+          PUSHOVER_TOKEN: ${{ secrets.PUSHOVER_TOKEN }}
+          PUSHOVER_USER: ${{ secrets.PUSHOVER_USER }}
+          NOTIFY_DAYS: ${{ vars.NOTIFY_DAYS }}
